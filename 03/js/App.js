@@ -6,6 +6,7 @@ let mesOutils;
 let angle = 0;
 let isRotating = false;
 const tiles = [];
+
 function start() {
   // constante locale
   monCanvas = document.getElementById("ecal");
@@ -17,9 +18,9 @@ function start() {
 
   // on stoke les tiles dans un tableau
   // pour pouvoir les manipuler plus facilement
-  const number = 50;
+  const number = 10;
   const size = monCanvas.width / number;
-  const color = Math.random() > 0.5 ? "lightgreen" : "blue";
+  const color = Math.random() > 0.5 ? "lightgreen" : "purple";
   
   for (let i = 0; i < number; i++) {
     for (let j = 0; j < number; j++) {
@@ -27,9 +28,9 @@ function start() {
     }
   }
 
-  // on ajoute un écouteur d'événement "click"
-  //  sur le document
-  document.addEventListener("click", function (event) {
+  // event listener - user's mouse position
+  //  on the document
+  document.addEventListener("mousemove", function (event) {
     
     // on vérifie si l'utilisateur a cliqué sur un tile
     tiles.forEach((tile) => {
@@ -40,7 +41,7 @@ function start() {
         (event.clientY - 60) * pixelRatio < tile.y + tile.size / 2
       ) {
         // on inverse la rotation du tile
-        // tile.rotation = !tile.rotation;
+        tile.rotation = !tile.rotation;
         tile.updateAngle();
       }
     });
