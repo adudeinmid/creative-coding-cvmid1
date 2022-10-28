@@ -18,12 +18,13 @@ function start() {
 
   // on stoke les tiles dans un tableau
   // pour pouvoir les manipuler plus facilement
-  const number = 10;
-  const size = monCanvas.width / number;
+  const cols = 10;
+  const rows = 6;
+  const size = monCanvas.width / cols;
   const color = Math.random() > 0.5 ? "lightgreen" : "purple";
   
-  for (let i = 0; i < number; i++) {
-    for (let j = 0; j < number; j++) {
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
       tiles.push(new Tile(i * size + size / 2,j * size + size / 2,size,color,mesOutils));
     }
   }

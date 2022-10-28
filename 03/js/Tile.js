@@ -35,19 +35,24 @@ class Tile {
     this.ctx.closePath();
     
 
-    //top form
+    //bottom shape
 
-    this.ctx.fillStyle = "#7418E7";
+    
+    //this.ctx.fillStyle = "#7418E7";
+    this.ctx.fillStyle = "white";
     this.ctx.beginPath ();
-    this.ctx.lineTo(0-this.size/2,0-this.size/2);
+    //this.ctx.lineTo(0-this.size/2,0-this.size/2);
+    this.ctx.lineTo(0, 0);
     this.ctx.arc(this.size/2, this.size /2, this.size/2, Math.PI, - Math.PI /2);
     this.ctx.fill();
     this.ctx.closePath();
 
-    //bottom form
-    this.ctx.fillStyle = "lightgreen";
+    //top shape
+    //this.ctx.fillStyle = "lightgreen";
+    //this.ctx.fillStyle = "#white";
     this.ctx.beginPath();
-    this.ctx.lineTo(0+this.size/2 , 0 + this.size/2);
+    //this.ctx.lineTo(0+this.size/2 , 0 + this.size/2);
+    this.ctx.lineTo(0, 0);
     this.ctx.arc(0-this.size/2,0-this.size/2, this.size/2 , 0, Math.PI/2,false);
     this.ctx.fill();
     this.ctx.closePath();
