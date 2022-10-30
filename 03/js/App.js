@@ -18,19 +18,18 @@ function start() {
 
   // on stoke les tiles dans un tableau
   // pour pouvoir les manipuler plus facilement
-  const cols = 10;
-  const rows = 6;
-  const size = monCanvas.width / cols;
+  const number = 10;
+  const size = monCanvas.width / number;
   const color = Math.random() > 0.5 ? "lightgreen" : "purple";
   
-  for (let i = 0; i < cols; i++) {
-    for (let j = 0; j < rows; j++) {
+  for (let i = 0; i < number; i++) {
+    for (let j = 0; j < number; j++) {
       tiles.push(new Tile(i * size + size / 2,j * size + size / 2,size,color,mesOutils));
     }
   }
 
   // event listener - user's mouse position
-  //  on the document
+  //  on the document //mousemove or click 
   document.addEventListener("mousemove", function (event) {
     
     // on vérifie si l'utilisateur a cliqué sur un tile
@@ -42,7 +41,7 @@ function start() {
         (event.clientY - 60) * pixelRatio < tile.y + tile.size / 2
       ) {
         // on inverse la rotation du tile
-        tile.rotation = !tile.rotation;
+        // tile.rotation = !tile.rotation;
         tile.updateAngle();
       }
     });
