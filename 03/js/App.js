@@ -20,11 +20,13 @@ function start() {
   // pour pouvoir les manipuler plus facilement
   const number = 10;
   const size = monCanvas.width / number;
-  const color = Math.random() > 0.5 ? "lightgreen" : "purple";
+  const color = Math.random() > 0.6 ? "lightgreen" : "purple";
+  const color2 = Math.random() > 0.3 ? "orange" : "lightgreen";
+
   
   for (let i = 0; i < number; i++) {
     for (let j = 0; j < number; j++) {
-      tiles.push(new Tile(i * size + size / 2,j * size + size / 2,size,color,mesOutils));
+      tiles.push(new Tile(i * size + size / 2,j * size + size / 2,size,color,color2,mesOutils));
     }
   }
 
@@ -41,11 +43,13 @@ function start() {
         (event.clientY - 60) * pixelRatio < tile.y + tile.size / 2
       ) {
         // on inverse la rotation du tile
-        // tile.rotation = !tile.rotation;
+        tile.rotation = !tile.rotation;
         tile.updateAngle();
       }
     });
   });
+
+
 
   // lancement de la fonction de dessin
   animate();
@@ -55,7 +59,8 @@ function start() {
 // cette fonction sera appelée à chaque frame
 function animate() {
   // on efface le canvas
-  mesOutils.clearRect(0, 0, monCanvas.width, monCanvas.height);
+  mesOutils.fillStyle = "white"
+  //mesOutils.clearRect(0, 0, monCanvas.width, monCanvas.height);
 
   // on dessine les tiles
   tiles.forEach((tile) => {
