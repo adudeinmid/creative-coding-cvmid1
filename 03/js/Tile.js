@@ -18,7 +18,7 @@ class Tile {
   }
 
   updateAngle() {
-    this.angle += 0.001;
+    this.angle += Math.PI/2;
   }
 
   draw() {
@@ -26,12 +26,12 @@ class Tile {
     this.ctx.translate(this.x, this.y);
     this.ctx.rotate(this.angle);
     
-    if (this.rotation) {
-      this.angle += 0.1;
-    }
+    // if (this.rotation) {
+    //   this.angle += 0.1;
+    // }
 
     this.ctx.lineCap = 'round';
-    this.ctx.lineWidth = 10;
+    this.ctx.lineWidth = 5;
     
     
     //white rect
