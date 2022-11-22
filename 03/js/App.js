@@ -60,7 +60,7 @@ function start() {
 function animate() {
   // on efface le canvas
   mesOutils.fillStyle = "white"
-  //mesOutils.clearRect(0, 0, monCanvas.width, monCanvas.height);
+  mesOutils.clearRect(0, 0, monCanvas.width, monCanvas.height);
 
   // on dessine les tiles
   tiles.forEach((tile) => {

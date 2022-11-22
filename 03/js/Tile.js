@@ -39,30 +39,37 @@ class Tile {
     this.ctx.beginPath();
     this.ctx.rect(0 - this.size / 2, 0 - this.size / 2, this.size, this.size);
     this.ctx.fill();
-    //this.ctx.stroke();
+    // this.ctx.stroke();
     this.ctx.closePath();
 
-    
-
-    this.ctx.strokeStyle = this.bgColor;
+    this.ctx.fillStyle = "black";
     this.ctx.beginPath();
-    this.ctx.moveTo(0-this.size/7,0-this.size/7);
-    this.ctx.lineTo(this.size/7,this.size/7);
-    this.ctx.stroke();
+    this.ctx.moveTo(0-this.size/2,0-this.size/2);
+    this.ctx.lineTo(0+this.size/2,0+this.size/2);
+    this.ctx.lineTo(0+this.size/2,0-this.size/2);
+    this.ctx.lineTo(0-this.size/2,0-this.size/2);
+    this.ctx.fill();
     this.ctx.closePath();
+
+    // this.ctx.strokeStyle = this.bgColor;
+    // this.ctx.beginPath();
+    // this.ctx.moveTo(0-this.size/7,0-this.size/7);
+    // this.ctx.lineTo(this.size/7,this.size/7);
+    // this.ctx.stroke();
+    // this.ctx.closePath();
 
     //top shape
-    this.ctx.strokeStyle = this.bgColor2;
-    this.ctx.beginPath();
-    this.ctx.arc(0,0, this.size/4 , 0, Math.PI/2,false);
-    this.ctx.stroke();
-    this.ctx.closePath();
+    // this.ctx.strokeStyle = this.bgColor2;
+    // this.ctx.beginPath();
+    // this.ctx.arc(0,0, this.size/4 , 0, Math.PI/2,false);
+    // this.ctx.stroke();
+    // this.ctx.closePath();
 
-    this.ctx.beginPath();
-    this.ctx.rotate(Math.PI);
-    this.ctx.arc(0,0, this.size/4 , Math.PI/2, 0,true);
-    this.ctx.stroke();
-    this.ctx.closePath();
+    // this.ctx.beginPath();
+    // this.ctx.rotate(Math.PI);
+    // this.ctx.arc(0,0, this.size/4 , Math.PI/2, 0,true);
+    // this.ctx.stroke();
+    // this.ctx.closePath();
 
 
 
@@ -71,7 +78,7 @@ class Tile {
     //
 
 
-    // //bottom shape 2 
+    //bottom shape 2 
     // this.ctx.beginPath ();
     // this.ctx.rotate(this.arcAngle);
     // this.ctx.arc(0, 0, this.size/6, 0, Math.PI,false);
