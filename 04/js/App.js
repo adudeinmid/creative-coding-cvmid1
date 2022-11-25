@@ -21,7 +21,12 @@ class App {
 
   setup() {
     this.bird = new Bird(100, 100, 50, this.ctx, 45 * Math.PI / 180);
+   
+
     document.addEventListener("click", this.click.bind(this));
+    document.addEventListener("mousemove", this.move.bind(this));
+
+    
     this.draw();
   }
 
@@ -29,16 +34,7 @@ class App {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.bird.draw();
 
-    // this.ctx.beginPath();
-    // this.ctx.moveTo(100,400);
-    // this.ctx.lineTo(300, 400);
-    // this.ctx.stroke();    
 
-    // // this.ctx.beginPath();
-    // // this.ctx.moveTo(400,800);
-    // // this.ctx.lineTo(800, 800);
-    // // this.ctx.stroke();    
-    
     requestAnimationFrame(this.draw.bind(this));
   }
 
@@ -50,6 +46,15 @@ class App {
     // this.bird.updateAngle();
 
   }
+
+  move(e){
+    this.mouse = {
+      x: e.clientX * this.pixelRatio,
+      y: e.clientY * this.pixelRatio,
+    };
+  }
+
+
 }
 
 window.onload = function () {
