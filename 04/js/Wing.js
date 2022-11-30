@@ -111,15 +111,11 @@ class Wing {
 
     resetPosition(){
 
+      //ANIMATION BATTEMENT
       this.t = 0;
-
-      
       this.originwingPos = this.wingPos;
-
       if (this.wingPos == 0){
-
         this.targetwingPos = this.radius *2;
-
       } else{
         this.targetwingPos = 0;
       }
