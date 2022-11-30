@@ -1,5 +1,5 @@
-class Bird {
-  constructor(x, y, radius, ctx,rotation) {
+class Body {
+  constructor(x, y, radius, ctx) {
     this.position = { x: x, y: y };
     this.target = {
       x: x,
@@ -17,27 +17,17 @@ class Bird {
     /*
       vitesse de d'incrémentation de t
     */
-    this.speed = 0.005;
+    this.speed = 0.002;
     /*
       t est un compteur qui va de 0 à 1
       qui definit la portion du chemin parcouru
     */
     this.t = 0;
 
-    this.rotation = true;
-    this.angle = 0;
-  }
-
-  updateAngle() {
-
-
-    this.angle += (this.origin.x + (this.target.x - this.origin.x)) / (this.origin.y + (this.target.y - this.origin.y));
-    
-    console.log(this.angle);
-    
-
 
   }
+
+
 
 
   draw() {
@@ -51,40 +41,13 @@ class Bird {
     this.ctx.save();
     this.ctx.translate(this.position.x, this.position.y);
 
-    //beek
-    this.ctx.fillStyle = "#F26722";
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.radius/2, 0-this.radius*0.8);
-    this.ctx.lineTo(this.radius, 0-this.radius*0.8);
-    this.ctx.lineTo(this.radius/2, 0);
-    this.ctx.fill();
-    
+
     //body
-    this.ctx.fillStyle = "#ADD147";
+    this.ctx.fillStyle = "black";
     this.ctx.beginPath();
     this.ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
     this.ctx.fill();
     this.ctx.closePath();
-
-    //eye
-    this.ctx.fillStyle = "white";
-    this.ctx.beginPath();
-    this.ctx.arc(this.radius/2, 0-this.radius/2, this.radius*0.15, 0, 2 * Math.PI);
-    this.ctx.fill();
-    this.ctx.closePath();
-
-    //wing
-    this.ctx.fillStyle = "#ED3165";
-    this.ctx.beginPath();
-    this.ctx.moveTo(0-this.radius, 0);
-    this.ctx.lineTo(0-this.radius, 0+this.radius);
-    this.ctx.lineTo(0, 0);
-    this.ctx.fill();
-
-
-
-    
-    
     this.ctx.restore();
   }
 
@@ -107,12 +70,14 @@ class Bird {
     };
     
 
-    this.originRadius = this.radius;
-    if (this.radius == 50) {
-      this.targetRadius = 100;
-    } else {
-      this.targetRadius = 50;
-    }
+    // this.originRadius = this.radius;
+    // if (this.radius == 500) {
+    //   this.targetRadius = 600;
+    // } else {
+    //   this.targetRadius = 500;
+    // }
+
+    
  
   }
 
@@ -125,7 +90,7 @@ class Bird {
     //on incrémente t par la vitesse
     this.t += this.speed;
     //on calcule le facteur d'interpolation suivant le type de easing
-    const ease = Easing.backInOut(this.t);
+    const ease = Easing.elasticOut(this.t);
 
     //nouvelle position
     // on part de la position d'origine
@@ -141,7 +106,7 @@ class Bird {
     //on incrémente t par la vitesse
     this.t += this.speed;
     //on calcule le facteur d'interpolation suivant le type de easing
-    const ease = Easing.backOut(this.t);
+    const ease = Easing.elasticOut(this.t);
 
     //nouvelle scale
     // on part de la position d'origine

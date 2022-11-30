@@ -20,11 +20,25 @@ class App {
   }
 
   setup() {
-    this.bird = new Bird(100, 100, 50, this.ctx, 45 * Math.PI / 180);
-   
+
+
+    const center = {
+      x: (window.innerWidth / 2) * this.pixelRatio,
+      y: (window.innerHeight / 2) * this.pixelRatio,
+    };
+
+    const radius = 500;
+
+    this.beek = new Beek(center.x,center.y,radius,this.ctx);
+    this.bird = new Body(center.x, center.y, radius, this.ctx, 45 * Math.PI / 180);
+    this.wing = new Wing(center.x, center.y,radius,0, this.ctx);  
+    this.eyes = new Eye(center.x,center.y,radius*0.1,this.ctx);
+
+    
+
 
     document.addEventListener("click", this.click.bind(this));
-    document.addEventListener("mousemove", this.move.bind(this));
+    //document.addEventListener("mousemove", this.move.bind(this));
 
     
     this.draw();
@@ -32,27 +46,42 @@ class App {
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.beek.draw();
     this.bird.draw();
-
+    this.wing.draw();
+    this.eyes.draw();
 
     requestAnimationFrame(this.draw.bind(this));
   }
 
   click(e) {
+    
     this.bird.resetAndGo(
       e.clientX * this.pixelRatio,
       e.clientY * this.pixelRatio
     );
-    // this.bird.updateAngle();
 
+
+    this.eyes.resetAndGo(
+      e.clientX * this.pixelRatio,
+      e.clientY * this.pixelRatio
+    );
+
+
+    this.wing.resetAndGo(
+      e.clientX * this.pixelRatio,
+      e.clientY * this.pixelRatio
+    );
+
+    this.beek.resetAndGo(
+      e.clientX * this.pixelRatio,
+      e.clientY * this.pixelRatio
+    );
+
+    this.wing.resetPosition();  
   }
 
-  move(e){
-    this.mouse = {
-      x: e.clientX * this.pixelRatio,
-      y: e.clientY * this.pixelRatio,
-    };
-  }
+
 
 
 }
