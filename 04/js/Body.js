@@ -10,10 +10,13 @@ class Body {
       y: this.target.y,
     };
 
+    
+
     this.originRadius = radius;
     this.targetRadius = radius;
     this.radius = radius;
     this.ctx = ctx;
+
     /*
       vitesse de d'incrémentation de t
     */
@@ -38,6 +41,19 @@ class Body {
     if (Math.abs(this.targetRadius - this.radius) > 0.01) this.scale();
     else this.radius = this.targetRadius; //on force la position finale
    
+    if (Math.abs(this.targetwingPos - this.wingPos) > 0.2) {
+      this.wingPosition();
+    } else if(this.wingAnimComplete == false){
+      this.resetAndGo(this.position.x, this.position.y);
+      this.wingPos = this.targetwingPos;
+      this.callWingAnim();
+      this.wingAnimComplete = true;
+    }
+    else{
+      this.wingPos = this.targetwingPos;
+    }
+
+
     this.ctx.save();
     this.ctx.translate(this.position.x, this.position.y);
 
@@ -49,6 +65,20 @@ class Body {
     this.ctx.fill();
     this.ctx.closePath();
     this.ctx.restore();
+
+    //wing
+    this.ctx.fillStyle = "red";
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, 0);
+    this.ctx.lineTo(-this.radius, this.radius - this.wingPos);
+    this.ctx.lineTo(-this.radius, 0);
+    this.ctx.lineTo(0, 0);
+    //this.ctx.stroke();
+    this.ctx.fill();
+    this.ctx.closePath();
+    this.ctx.restore();
+
+
   }
 
   /**

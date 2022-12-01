@@ -30,7 +30,6 @@ class App {
     this.img = new Image();
     
     this.img.onload = ()=>{
-      // this.draw();
       this.detectPixels();
     }
 

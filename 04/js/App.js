@@ -29,8 +29,8 @@ class App {
 
     const radius = 500;
 
-    this.beek = new Beek(center.x,center.y,radius,this.ctx);
-    this.bird = new Body(center.x, center.y, radius, this.ctx, 45 * Math.PI / 180);
+    this.beek = new Beek(center.x,center.y,radius,this.ctx,);
+    this.bird = new Body(center.x, center.y, radius, this.ctx,0);
     this.wing = new Wing(center.x, center.y,radius,0, this.ctx);  
     this.eyes = new Eye(center.x,center.y,radius*0.1,this.ctx);
 
@@ -78,7 +78,7 @@ class App {
       e.clientY * this.pixelRatio
     );
 
-    this.wing.resetPosition();  
+    this.wing.handleClick();  
   }
 
 
