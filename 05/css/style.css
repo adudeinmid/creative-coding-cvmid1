@@ -3,11 +3,12 @@ html,body{
     padding:0;
     font-family:"Google Sans",Arial, Helvetica, sans-serif;
     font-size:12px;
-    color:#333;
-    background:#fff;
+    color:rgb(0, 55, 255);
+    background:rgb(0, 0, 0);
 }
 
 canvas{
     border:0;
-    background:#eee;
+    background:rgb(0, 0, 0);
+
 }

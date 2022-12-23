@@ -90,19 +90,13 @@ class Wing {
       y,
     };
 
-    // this.originRadius = this.radius;
-    // if (this.radius == 500) {
-    //   this.targetRadius = 600;
-    // } else {
-    //   this.targetRadius = 500;
-    // }
+
   }
 
   handleClick(){
 
     this.wingAnimComplete=false;
     this.callWingAnim();
-    // this.wingIsUp = false;
   }
 
   callWingAnim(){
@@ -118,7 +112,7 @@ animateWingUp(){
   this.t = 0;
   this.originwingPos = this.wingPos;
 
-  this.targetwingPos = this.radius * 2;
+  this.targetwingPos = this.radius * 1.5;
   this.wingIsUp = true;
 }
 
