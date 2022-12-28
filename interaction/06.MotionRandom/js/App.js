@@ -83,8 +83,8 @@ class App {
       // point.draw();
       point.angle++;
 
-      const distanceX = this.mouseX - (point.x - this.topLeft.x);
-      const distanceY = this.mouseY - (point.y - this.topLeft.y);
+      const distanceX = this.mouseX - (point.x/2);
+      const distanceY = this.mouseY - (point.y/2);
       const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
       if (distance < 100) {
