@@ -9,11 +9,39 @@ class App {
     document.body.appendChild(this.canvas);
     this.ctx = this.canvas.getContext("2d");
     this.img_file = "./asset/andy.jpg";
+
+    ////////////////////////
+    // Image segmentation //
+    ////////////////////////
+    this.video = document.getElementById('webcam');
+    this.demosSection = document.getElementById('demos');
+    this.liveView = document.getElementById('liveView');
+    this.previousSegmentationComplete = true;
+  
+    // An object to configure parameters to set for the bodypix model.
+    // See github docs for explanations.
+    this.bodyPixProperties = {
+      architecture: 'MobileNetV1',
+      outputStride: 16,
+      multiplier: 0.75,
+      quantBytes: 4
+    };
+  
+    // An object to configure parameters for detection. I have raised
+    // the segmentation threshold to 90% confidence to reduce the
+    // number of false positives.
+    this.segmentationProperties = {
+      flipHorizontal: false,
+      internalResolution: 'high',
+      segmentationThreshold: 0.9
+    };
+    ////////////////////////
+    
     this.setup();
   }
 
-  setup() {
 
+  setup() {
     this.points = [];
     this.totalLines = 100;
     this.subdivisions = 100;
@@ -44,6 +72,44 @@ class App {
     };
     this.img.src = this.img_file;
 
+
+    /////////////////
+    // Load model //
+    /////////////////
+    // Let's load the model with our parameters defined above.
+    // Before we can use bodypix class we must wait for it to finish
+    // loading. Machine Learning models can be large and take a moment to
+    // get everything needed to run.
+    this.modelHasLoaded = false;
+    this.model = undefined;
+
+    this.model = bodyPix.load(this.bodyPixProperties).then(function (loadedModel) {
+      this.model = loadedModel;
+      this.modelHasLoaded = true;
+      // Show demo section now model is ready to use.
+      // demosSection.classList.remove('invisible');
+    }.bind(this));
+
+
+    // Lets create a canvas to render our findings to the DOM.
+    this.webcamCanvas = document.createElement('canvas');
+    this.webcamCanvas.setAttribute('class', 'overlay');
+    this.liveView.appendChild(this.webcamCanvas);
+
+    // We will also create a tempory canvas to render to that is in memory only
+    // to store frames from the web cam stream for classification.
+    this.videoRenderCanvas = document.createElement('canvas');
+    this.videoRenderCanvasCtx = this.videoRenderCanvas.getContext('2d');
+
+    // If webcam supported, add event listener to button for when user
+    // wants to activate it.
+    if (this.hasGetUserMedia()) {
+      this.enableWebcamButton = document.getElementById('webcamButton');
+      this.enableWebcamButton.addEventListener('click', this.enableCam.bind(this));
+    } else {
+      console.warn('getUserMedia() is not supported by your browser');
+    }
+    /////////////////
   }
 
   detectPixels() {
@@ -71,6 +137,96 @@ class App {
 
     this.draw();
   }
+
+  ////////////////////////
+  // Segmentation logic //
+  ////////////////////////
+  // A function to render returned segmentation data to a given canvas context.
+  processSegmentation(canvas, segmentation) {
+    this.ctx = canvas.getContext('2d');
+    // console.log(segmentation)
+    
+    this.imageData = this.ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = this.imageData.data;
+    
+    let n = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (segmentation.data[n] !== -1) {
+        data[i] = 128;     // red
+        data[i + 1] = 128; // green
+        data[i + 2] = 128; // blue
+        data[i + 3] = 128; // alpha
+      } else {
+        data[i] = 0;    
+        data[i + 1] = 0;
+        data[i + 2] = 0;
+        data[i + 3] = 0;
+      }
+      n++;
+    }
+    
+    this.ctx.putImageData(this.imageData, 0, 0);
+  }
+
+  // Check if webcam access is supported.
+  hasGetUserMedia() {
+    return !!(navigator.mediaDevices &&
+      navigator.mediaDevices.getUserMedia);
+  }
+  
+  // This function will repeatidly call itself when the browser is ready to process
+  // the next frame from webcam.
+  predictWebcam() {
+    if (this.previousSegmentationComplete) {
+      // Copy the video frame from webcam to a tempory canvas in memory only (not in the DOM).
+      this.videoRenderCanvasCtx.drawImage(this.video, 0, 0);
+      this.previousSegmentationComplete = false;
+      // Now classify the canvas image we have available.
+     this.model.segmentPersonParts(this.videoRenderCanvas,this.segmentationProperties).then(function(segmentation) {
+        this.processSegmentation(this.webcamCanvas, segmentation);
+        this.previousSegmentationComplete = true;
+      }.bind(this));
+    }
+
+    // Call this function again to keep predicting when the browser is ready.
+    window.requestAnimationFrame(this.predictWebcam.bind(this));
+  }
+
+
+  // Enable the live webcam view and start classification.
+  enableCam(event) {
+    if (!this.modelHasLoaded) {
+      return;
+    }
+    console.log('Loading webcam...')
+    
+    // Hide the button.
+    event.target.classList.add('removed');  
+    
+    // getUsermedia parameters.
+    const constraints = {
+      video: true
+    };
+
+    // Activate the webcam stream.
+    navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+      this.video.addEventListener('loadedmetadata', function() {
+        // Update widths and heights once video is successfully played otherwise
+        // it will have width and height of zero initially causing classification
+        // to fail.
+        this.webcamCanvas.width = this.video.videoWidth;
+        this.webcamCanvas.height = this.video.videoHeight;
+        this.videoRenderCanvas.width = this.video.videoWidth;
+        this.videoRenderCanvas.height = this.video.videoHeight;
+      }.bind(this));
+      
+      this.video.srcObject = stream;
+      
+      this.video.addEventListener('loadeddata', this.predictWebcam.bind(this));
+    }.bind(this));
+  }
+
+  /////////////////
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
