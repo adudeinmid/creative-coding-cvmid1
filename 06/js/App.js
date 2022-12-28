@@ -43,9 +43,9 @@ class App {
 
   setup() {
     this.points = [];
-    this.totalLines = 100;
-    this.subdivisions = 100;
-    this.space = window.innerWidth / 1.2 / this.subdivisions;
+    this.totalLines = 120;
+    this.subdivisions = 160;
+    this.space = window.innerWidth / 0.5 / this.subdivisions;
     this.width = this.space * this.subdivisions;
     this.topLeft = {
       x: this.canvas.width / 2 - this.width / 2,
@@ -62,15 +62,17 @@ class App {
       }
     }
 
-    this.ctx.lineWidth = 2 * this.pixelRatio;
+    this.ctx.lineWidth = 3 * this.pixelRatio;
     this.ctx.strokeStyle = "black";
 
     // load image
-    this.img = new Image();
-    this.img.onload = () => {
-      this.detectPixels();
-    };
-    this.img.src = this.img_file;
+    // this.img = new Image();
+    // console.log(this.img)
+    // this.img.onload = () => {
+    //   this.detectPixels();
+    //   // this.processSegmentation();
+    // };
+    // this.img.src = this.img_file;
 
 
     /////////////////
@@ -119,12 +121,14 @@ class App {
     // get pixel data
     this.pixels = this.imgData.data;
     // get steps for 100 x 100
-    this.step = Math.floor(this.img.width / 100);
+    this.stepX = Math.floor(this.img.width / 120);
+    this.stepY = Math.floor(this.img.width / 160);
+
     // get rgb data for each step pixel in 100 x 100
     
     this.rgb = [];
-    for (let i = 0; i < this.img.height; i += this.step) {
-      for (let j = 0; j < this.img.width; j += this.step) {
+    for (let i = 0; i < this.img.height; i += this.stepX) {
+      for (let j = 0; j < this.img.width; j += this.stepY) {
         let index = (i * this.img.width + j) * 4;
         this.rgb.push({
           r: this.pixels[index],
@@ -134,38 +138,43 @@ class App {
         });
       }
     }
-
     this.draw();
   }
 
-  ////////////////////////
-  // Segmentation logic //
-  ////////////////////////
-  // A function to render returned segmentation data to a given canvas context.
+
+
   processSegmentation(canvas, segmentation) {
-    this.ctx = canvas.getContext('2d');
-    // console.log(segmentation)
-    
-    this.imageData = this.ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = this.imageData.data;
-    
-    let n = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      if (segmentation.data[n] !== -1) {
-        data[i] = 128;     // red
-        data[i + 1] = 128; // green
-        data[i + 2] = 128; // blue
-        data[i + 3] = 128; // alpha
-      } else {
-        data[i] = 0;    
-        data[i + 1] = 0;
-        data[i + 2] = 0;
-        data[i + 3] = 0;
+    var ctx = this.canvas.getContext('2d');
+
+    this.rgb = [];
+
+    for (let i = 0; i < canvas.height; i += 4) {
+      for (let j = 0; j < canvas.width; j += 4) {
+        let index = (i * canvas.width + j);
+    // for (let i = 0; i < data.length; i ++) {
+        if (segmentation.data[index] !== -1) {
+          this.rgb.push({
+            r: 100,
+            g: 100,
+            b: 100,
+            a: 255,
+          });
+        } else {
+          this.rgb.push({
+            r: 10,
+            g: 10,
+            b: 10,
+            a: 255,
+          });
+        }
+        // n++;
       }
-      n++;
     }
     
-    this.ctx.putImageData(this.imageData, 0, 0);
+    // ctx.putImageData(imageData, 0, 0);
+    // console log the length of this.rgb
+    //console.log(this.rgb.length)
+    this.draw();
   }
 
   // Check if webcam access is supported.
@@ -218,6 +227,7 @@ class App {
         this.webcamCanvas.height = this.video.videoHeight;
         this.videoRenderCanvas.width = this.video.videoWidth;
         this.videoRenderCanvas.height = this.video.videoHeight;
+        console.log(this.video)
       }.bind(this));
       
       this.video.srcObject = stream;
@@ -231,8 +241,22 @@ class App {
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    // build grid
+    this.points = [];
+    for (let j = 0; j < this.totalLines; j++) {
+      for (let i = 0; i < this.subdivisions; i++) {
+        const x = i * this.space + this.topLeft.x;
+        let y = j * this.space + this.topLeft.y;
+        const circle = new Circle(x, y, 4, this.ctx);
+        this.points.push(circle);
+      }
+    }
+
     //draw all circle of the grid
+    //console.log(this.points)
     this.points.forEach((circle, index) => {
+      // pass if color is undefined
+      // if (!this.rgb[index]) return;
       const color = this.rgb[index];
       circle.color = `rgb(${color.r}, ${color.g}, ${color.b})`;
       circle.draw();
@@ -246,9 +270,9 @@ class App {
           this.ctx.moveTo(this.points[index].x, this.points[index].y);
         }
         // replace that line with a quadratic curve
-        // this.ctx.lineTo(this.points[index + 1].x, this.points[index + 1].y);
-        const cx = (this.points[index].x + this.points[index + 1].x) / 2;
-        const cy = (this.points[index].y + this.points[index + 1].y) / 2;
+        //this.ctx.lineTo(this.points[index + 1].x, this.points[index + 1].y);
+        const cx = (this.points[index].x + this.points[index + 1].x)/2;
+        const cy = (this.points[index].y + this.points[index + 1].y)/2;
         this.ctx.quadraticCurveTo(
           this.points[index].x,
           this.points[index].y,
@@ -264,7 +288,7 @@ class App {
       this.ctx.closePath();
     }
 
-    //requestAnimationFrame(this.draw.bind(this));
+    // requestAnimationFrame(this.draw.bind(this));
   }
 }
 
