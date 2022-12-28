@@ -55,6 +55,7 @@ class App {
     // get steps for 100 x 100
     this.step = Math.floor(this.img.width / 100);
     // get rgb data for each step pixel in 100 x 100
+    
     this.rgb = [];
     for (let i = 0; i < this.img.height; i += this.step) {
       for (let j = 0; j < this.img.width; j += this.step) {
